@@ -1,11 +1,21 @@
 <resources>
     <string name="app_name">app-scheduler</string>
-    <string name="title_schedule_items">Schedule Items</string>
-    <string name="title_install_apps">Install App</string>
+    <string name="title_scheduled_apps">Scheduled apps</string>
+    <string name="title_install_apps">Select App</string>
     <string name="title_scheduling">Scheduling</string>
     <string name="new_schedule">New Schedule</string>
     <string name="please_select_a_date">Please select a date</string>
     <string name="update">Update</string>
     <string name="cancel">Cancel</string>
     <string name="no_app_schedule_yet">No app schedule yet</string>
+    <string name="add_new_schedule">add</string>
+    <string name="app">App</string>
+    <string name="schedule_at">Scheduling at</string>
+    <string name="description">Description</string>
+    <string name="set_scheduling_time">Set scheduling time</string>
+    <string name="all_scheduled">All Scheduled</string>
+    <string name="active_scheduled">Active Scheduled</string>
+    <string name="completed_scheduled">Completed Scheduled</string>
+    <string name="cancel_schedule">Cancled Scheduled</string>
+    <string name="filter_schedule">Filter Schedule</string>
 </resources>

@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app_scheduler.data.model.AppInfo
 import com.example.app_scheduler.databinding.FragmentInstallappsBinding
@@ -30,7 +31,6 @@ class InstallAppsFragment : Fragment() {
     private val viewModel: InstallAppsViewModel by viewModels()
 
 
-    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,7 +69,10 @@ class InstallAppsFragment : Fragment() {
         val adapter = InstallAppsAdapter(items) {
             showPicker(it)
         }
-        binding.list.layoutManager = LinearLayoutManager(context)
+        val layoutManager = LinearLayoutManager(context)
+        binding.list.layoutManager = layoutManager
+        val divider = DividerItemDecoration(context,layoutManager.orientation)
+        binding.list.addItemDecoration(divider)
         binding.list.adapter = adapter
     }
     private fun showPicker(item: AppInfo){

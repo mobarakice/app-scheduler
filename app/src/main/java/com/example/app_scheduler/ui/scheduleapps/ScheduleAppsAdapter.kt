@@ -1,10 +1,8 @@
 package com.example.app_scheduler.ui.scheduleapps
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app_scheduler.data.db.entity.Schedule
 import com.example.app_scheduler.databinding.ScheduleAppItemBinding
@@ -14,11 +12,14 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 
-class ScheduleAppsAdapter(private val schedules: List<Schedule>, private val listener: ScheduleItemClickListener) :
-        RecyclerView.Adapter<ScheduleAppsAdapter.ViewHolder>() {
+class ScheduleAppsAdapter(
+    private val schedules: List<Schedule>,
+    private val listener: ScheduleItemClickListener
+) :
+    RecyclerView.Adapter<ScheduleAppsAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = schedules[position]
-        holder.bind(item,listener)
+        holder.bind(item, listener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,21 +31,29 @@ class ScheduleAppsAdapter(private val schedules: List<Schedule>, private val lis
     }
 
     class ViewHolder private constructor(private val itemBinding: ScheduleAppItemBinding) :
-            RecyclerView.ViewHolder(itemBinding.root) {
+        RecyclerView.ViewHolder(itemBinding.root) {
 
-        @SuppressLint("SetTextI18n")
-        fun bind(schedule: Schedule, listener: ScheduleItemClickListener){
+        fun bind(schedule: Schedule, listener: ScheduleItemClickListener) {
             itemBinding.icon.setImageDrawable(schedule.icon)
             itemBinding.appName.text = schedule.appName
-            itemBinding.time.text = LocalDateTime.ofInstant(Instant.ofEpochMilli(schedule.time?:0),
-                ZoneId.systemDefault())
+            itemBinding.appPackageName.text = schedule.packageName
+            if(schedule.description.isNullOrEmpty()){
+                itemBinding.description.visibility = View.GONE
+            }else{
+                itemBinding.description.text = schedule.description
+                itemBinding.description.visibility = View.VISIBLE
+            }
+            itemBinding.appName.text = schedule.appName
+            itemBinding.scheduleTime.text = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(schedule.time ?: 0),
+                ZoneId.systemDefault()
+            )
                 .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")).toString()
-            itemBinding.status.text = "Status: ${schedule.getStates()}"
-            itemBinding.update.setOnClickListener{
+            itemBinding.edit.setOnClickListener {
                 listener.onUpdateClick(schedule)
             }
 
-            itemBinding.cancel.setOnClickListener{
+            itemBinding.cancel.setOnClickListener {
                 listener.onCancelClick(schedule)
             }
 
@@ -57,22 +66,5 @@ class ScheduleAppsAdapter(private val schedules: List<Schedule>, private val lis
                 return ViewHolder(binding)
             }
         }
-    }
-}
-
-/**
- * Callback for calculating the diff between two non-null items in a list.
- *
- *
- * Used by ListAdapter to calculate the minimum number of changes between and old list and a new
- * list that's been passed to `submitList`.
- */
-internal class ScheduleAppsDiffCallback : DiffUtil.ItemCallback<Schedule>() {
-    override fun areItemsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
-        return oldItem == newItem
     }
 }

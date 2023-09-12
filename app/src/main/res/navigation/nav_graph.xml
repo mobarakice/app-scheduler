@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/scheduled_apps">
+
+    <fragment
+        android:id="@+id/scheduled_apps"
+        android:name="com.example.app_scheduler.ui.scheduleapps.ScheduleAppsFragment"
+        android:label="@string/title_scheduled_apps"
+        tools:layout="@layout/fragment_scheduleapps" >
+        <action
+            android:id="@+id/action_scheduled_apps_to_add_edit_schedule"
+            app:destination="@id/add_edit_schedule" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/add_edit_schedule"
+        android:name="com.example.app_scheduler.ui.addedit.AddEditFragment"
+        android:label="@string/title_scheduled_apps"
+        tools:layout="@layout/fragment_add_edit" >
+        <action
+            android:id="@+id/action_add_edit_schedule_to_scheduled_apps"
+            app:destination="@id/scheduled_apps" />
+        <action
+            android:id="@+id/action_add_edit_schedule_to_nav_install_apps"
+            app:destination="@id/nav_install_apps" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_install_apps"
+        android:name="com.example.app_scheduler.ui.installapps.InstallAppsFragment"
+        android:label="@string/title_install_apps"
+        tools:layout="@layout/fragment_installapps" >
+        <action
+            android:id="@+id/action_nav_install_apps_to_add_edit_schedule"
+            app:destination="@id/add_edit_schedule" />
+    </fragment>
+</navigation>

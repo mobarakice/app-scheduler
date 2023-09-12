@@ -28,10 +28,10 @@ import javax.inject.Inject
 @HiltViewModel
 class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
 @Inject constructor(
-    val repository: ScheduleRepository,
+    private val repository: ScheduleRepository,
     val handle: SavedStateHandle,
     @ApplicationContext private val context: Context
-): ViewModel() {
+) : ViewModel() {
 
 
     private var _appInfos: MutableStateFlow<List<AppInfo>> = MutableStateFlow(emptyList())
@@ -50,7 +50,7 @@ class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
     }
 
     // searching main activities labeled to be launchers of the apps
-    suspend fun getAllInstallApps(context: Context) = withContext(Dispatchers.IO){
+    suspend fun getAllInstallApps(context: Context) = withContext(Dispatchers.IO) {
         val pm = context.packageManager
         val mainIntent = Intent(Intent.ACTION_MAIN, null)
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
@@ -63,23 +63,31 @@ class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
         } else {
             pm.queryIntentActivities(mainIntent, 0)
         }.map {
-            AppInfo(it.activityInfo.loadLabel(pm).toString(),
+            AppInfo(
+                it.activityInfo.loadLabel(pm).toString(),
                 it.activityInfo.packageName,
-                it.activityInfo.loadIcon(pm))
+                it.activityInfo.loadIcon(pm)
+            )
         }
     }
 
-    fun printInfo(resolveInfo : ResolveInfo){
-        Log.i("Test","${resolveInfo.activityInfo.name} ${resolveInfo.activityInfo.packageName}")
+    fun printInfo(resolveInfo: ResolveInfo) {
+        Log.i("Test", "${resolveInfo.activityInfo.name} ${resolveInfo.activityInfo.packageName}")
     }
 
     fun doSchedule(times: String, item: AppInfo) {
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             val uuid = UUID.randomUUID().toString()
             val time = Utility.getTimeInMillis(times)
-            val schedule = Schedule(uuid,item.name,item.packageName, Scheduled(),time)
+            val schedule = Schedule(
+                id = uuid,
+                appName = item.name,
+                packageName = item.packageName,
+                status = Scheduled(),
+                time = time
+            )
             repository.insertSchedule(schedule)
-            Utility.scheduleWorker(context,time,schedule)
+            Utility.scheduleWorker(context, time, schedule)
             _success.value = true
         }
     }

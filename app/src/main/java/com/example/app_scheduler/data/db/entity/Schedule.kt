@@ -19,6 +19,7 @@ data class Schedule(
     @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "app_name") var appName: String,
     @ColumnInfo(name = "package_name") val packageName: String,
+    @ColumnInfo(name = "description") var description: String? = "",
     @ColumnInfo(name = "status") var status: ScheduleState,
     @ColumnInfo(name = "time") var time: Long?,
 ){
