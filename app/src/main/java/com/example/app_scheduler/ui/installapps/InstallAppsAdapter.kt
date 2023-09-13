@@ -28,7 +28,7 @@ class InstallAppsAdapter(private val appInfos: List<AppInfo>,private val listene
 
         fun bind(appInfo: AppInfo, listener: OnItemClickListener) {
             itemBinding.appName.text = appInfo.name
-            itemBinding.icon.background = appInfo.icon
+            itemBinding.icon.setImageDrawable(appInfo.icon)
             itemBinding.root.setOnClickListener{
                 listener.onItemClick(appInfo)
             }

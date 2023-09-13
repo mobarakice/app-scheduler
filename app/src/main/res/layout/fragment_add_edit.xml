@@ -19,7 +19,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias=".05"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <View
+        android:id="@+id/view_app"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="@id/app_icon"
+        app:layout_constraintEnd_toEndOf="@+id/app_name"
+        app:layout_constraintStart_toStartOf="@id/app_icon"
+        app:layout_constraintTop_toTopOf="@id/app_icon" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/app_icon"
@@ -30,10 +41,11 @@
         app:layout_constraintLeft_toRightOf="@+id/app"
         app:layout_constraintTop_toBottomOf="@+id/app"
         app:srcCompat="@drawable/help_24px"/>
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/app_name"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
@@ -46,7 +58,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/app_package_name"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         app:layout_constraintBottom_toBottomOf="@id/app_icon"
         app:layout_constraintEnd_toEndOf="@+id/app_name"
@@ -62,52 +74,82 @@
         android:text="@string/schedule_at"
         android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
         android:textColor="@color/purple_500"
-        app:layout_constraintBottom_toTopOf="@+id/scheduling_icon"
+        app:layout_constraintBottom_toTopOf="@+id/time_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/app"
         app:layout_constraintTop_toBottomOf="@id/app_icon" />
 
+    <View
+        android:id="@+id/view_time"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="@id/time_icon"
+        app:layout_constraintEnd_toEndOf="@+id/schedule_time"
+        app:layout_constraintStart_toStartOf="@id/time_icon"
+        app:layout_constraintTop_toTopOf="@id/time_icon" />
+
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/scheduling_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:id="@+id/time_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/description"
         app:layout_constraintStart_toStartOf="@id/app_icon"
         app:layout_constraintTop_toBottomOf="@+id/scheduling"
-        app:srcCompat="@drawable/calendar_clock_24px" />
+        app:srcCompat="@drawable/schedule_24px"
+        app:tint="@color/purple_200" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/schedule_time"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:drawableStart="@drawable/schedule_24px"
-        android:drawablePadding="5dp"
         android:gravity="center_vertical"
+        android:text="@string/set_scheduling_time"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         android:textColor="@color/purple_200"
-        app:layout_constraintBottom_toTopOf="@+id/schedule_date"
+        app:layout_constraintBottom_toBottomOf="@+id/time_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/scheduling_icon"
-        app:layout_constraintTop_toTopOf="@+id/scheduling_icon"
-        android:text="@string/set_scheduling_time"
+        app:layout_constraintStart_toEndOf="@+id/time_icon"
+        app:layout_constraintTop_toTopOf="@+id/time_icon"
         tools:text="10:30 pm" />
+
+    <View
+        android:id="@+id/view_date"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="@id/date_icon"
+        app:layout_constraintEnd_toEndOf="@+id/schedule_date"
+        app:layout_constraintStart_toStartOf="@id/date_icon"
+        app:layout_constraintTop_toTopOf="@id/date_icon" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/date_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@id/time_icon"
+        app:layout_constraintTop_toBottomOf="@+id/time_icon"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/today_24px"
+        app:tint="@color/purple_200" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/schedule_date"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:drawableStart="@drawable/today_24px"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         android:textColor="@color/purple_200"
-        app:layout_constraintBottom_toBottomOf="@+id/scheduling_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/date_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/schedule_time"
-        app:layout_constraintTop_toBottomOf="@+id/schedule_time"
+        app:layout_constraintStart_toEndOf="@+id/date_icon"
+        app:layout_constraintTop_toTopOf="@+id/date_icon"
         tools:text="Sep 12, 2023" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -121,7 +163,7 @@
         app:layout_constraintBottom_toTopOf="@+id/input_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/app"
-        app:layout_constraintTop_toBottomOf="@id/scheduling_icon" />
+        app:layout_constraintTop_toBottomOf="@id/date_icon" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/input_description"
@@ -129,36 +171,39 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:hint="@string/description"
+        android:lines="3"
         android:maxLines="3"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/description"
         app:layout_constraintStart_toStartOf="@id/description"
         app:layout_constraintTop_toBottomOf="@id/description" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/save"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/cancel"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/input_description"
-        app:layout_constraintVertical_bias="0.095"
-        app:srcCompat="@drawable/save_24px"
-        app:tint="@color/purple_500" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/cancel"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:tint="@color/teal_200"
-        app:layout_constraintBottom_toBottomOf="@id/save"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/save"
-        app:layout_constraintTop_toTopOf="@id/save"
+        android:background="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/save"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_description"
+        app:layout_constraintVertical_bias="0.095"
         app:srcCompat="@drawable/cancel_24px"
+        app:tint="@color/purple_500" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/save"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:tint="@color/teal_200"
+        app:layout_constraintBottom_toBottomOf="@id/cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cancel"
+        app:layout_constraintTop_toTopOf="@id/cancel"
+        app:srcCompat="@drawable/check_circle_24px"
         app:tint="@color/purple_500" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

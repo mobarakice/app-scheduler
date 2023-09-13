@@ -40,6 +40,11 @@ class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
     val isLoading: StateFlow<Boolean> = _isLoading
     private var _success = MutableStateFlow(false)
     val success: StateFlow<Boolean> = _success
+    var _appInfo: MutableStateFlow<AppInfo?> = MutableStateFlow(null)
+    val appInfo: StateFlow<AppInfo?> = _appInfo
+    var time: String = ""
+    var date: String = ""
+
 
     init {
         viewModelScope.launch {
@@ -75,20 +80,34 @@ class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
         Log.i("Test", "${resolveInfo.activityInfo.name} ${resolveInfo.activityInfo.packageName}")
     }
 
-    fun doSchedule(times: String, item: AppInfo) {
+    fun doSchedule(times: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            saveSchedule(times, appInfo.value)
+            _success.value = true
+        }
+    }
+
+    fun clearAll(){
+        _appInfo.value = null
+        time = ""
+        date = ""
+    }
+
+    private suspend fun saveSchedule(description: String, item: AppInfo?) {
+        item?.let {
             val uuid = UUID.randomUUID().toString()
-            val time = Utility.getTimeInMillis(times)
+            val dateTime = Utility.getTimeInMillis("$date $time")
             val schedule = Schedule(
                 id = uuid,
-                appName = item.name,
-                packageName = item.packageName,
+                appName = it.name,
+                packageName = it.packageName,
                 status = Scheduled(),
-                time = time
+                description = description,
+                time = dateTime
             )
             repository.insertSchedule(schedule)
-            Utility.scheduleWorker(context, time, schedule)
-            _success.value = true
+            Utility.scheduleWorker(context, dateTime, schedule)
+            clearAll()
         }
     }
 }

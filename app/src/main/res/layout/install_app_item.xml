@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
     android:padding="8dp">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -14,7 +15,7 @@
         app:layout_constraintEnd_toStartOf="@+id/app_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/gallery_thumb" />
+        app:srcCompat="@mipmap/ic_launcher" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/app_name"

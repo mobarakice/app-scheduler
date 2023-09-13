@@ -18,4 +18,6 @@
     <string name="completed_scheduled">Completed Scheduled</string>
     <string name="cancel_schedule">Cancled Scheduled</string>
     <string name="filter_schedule">Filter Schedule</string>
+    <string name="search">Search apps</string>
+    <string name="add_edit_schedule">Add or Update schedule</string>
 </resources>

@@ -21,8 +21,8 @@ class TimePickerFragment (private val listener: DateTimePickerListener): DialogF
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
         // Do something with the time chosen by the user
-        val date = arguments?.getString("DatePicker")?:""
-        val time = "$date $hourOfDay:$minute"
+        //val date = arguments?.getString("DatePicker")?:""
+        val time = "$hourOfDay:$minute"
         listener.onPick(time)
 
     }

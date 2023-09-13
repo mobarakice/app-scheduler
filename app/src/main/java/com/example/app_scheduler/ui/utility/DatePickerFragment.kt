@@ -32,12 +32,6 @@ class DatePickerFragment(private val listener: DateTimePickerListener) : DialogF
         val date = "$day-$m-$year"
         val arg = Bundle()
         arg.putString("DatePicker",date)
-        activity?.let {
-
-            val dailog = TimePickerFragment(listener)
-            dailog.arguments = arg
-            dailog.show(it.supportFragmentManager,"timePicker")
-
-        }
+        listener.onPick(date)
     }
 }

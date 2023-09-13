@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/add_edit_schedule"
         android:name="com.example.app_scheduler.ui.addedit.AddEditFragment"
-        android:label="@string/title_scheduled_apps"
+        android:label="@string/add_edit_schedule"
         tools:layout="@layout/fragment_add_edit" >
         <action
             android:id="@+id/action_add_edit_schedule_to_scheduled_apps"
