@@ -102,10 +102,11 @@ class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
     }
 
     private suspend fun saveSchedule(description: String, item: AppInfo?) {
+        uuid = uuid.ifEmpty { UUID.randomUUID().toString() }
         item?.let {
             val dateTime = "$date $time".convertStringToTimestamps()
             val schedule = Schedule(
-                id = uuid.ifEmpty { UUID.randomUUID().toString() },
+                id = uuid,
                 appName = it.name,
                 packageName = it.packageName,
                 status = Scheduled(),
