@@ -34,7 +34,7 @@ class AddEditViewModel @Inject constructor(
     fun update(context: Context, schedule: Schedule) {
         viewModelScope.launch(Dispatchers.IO){
             repository.updateSchedule(schedule)
-            Utility.scheduleWorker(context,schedule.time?:0, schedule)
+            //Utility.scheduleWorker(context,schedule.time?:0, schedule)
         }
     }
 

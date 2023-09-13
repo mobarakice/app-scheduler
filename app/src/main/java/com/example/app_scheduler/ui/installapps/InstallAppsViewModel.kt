@@ -4,9 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import android.os.Build
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -60,7 +58,7 @@ class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
     }
 
     // searching main activities labeled to be launchers of the apps
-    suspend fun getAllInstallApps(context: Context) = withContext(Dispatchers.IO) {
+    private suspend fun getAllInstallApps(context: Context) = withContext(Dispatchers.IO) {
         val pm = context.packageManager
         val mainIntent = Intent(Intent.ACTION_MAIN, null)
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
@@ -79,10 +77,6 @@ class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
                 it.activityInfo.loadIcon(pm)
             )
         }
-    }
-
-    fun printInfo(resolveInfo: ResolveInfo) {
-        Log.i("Test", "${resolveInfo.activityInfo.name} ${resolveInfo.activityInfo.packageName}")
     }
 
     fun doSchedule(times: String) {
@@ -132,7 +126,7 @@ class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
         }
     }
 
-    suspend fun findSchedule(scheduleId: String){
+    private suspend fun findSchedule(scheduleId: String){
         val schedule = repository.getScheduleById(scheduleId)
         schedule?.let {
             _appInfo.value = it.getAppInfo()

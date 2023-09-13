@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.NameNotFoundException
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -15,35 +14,57 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.hilt.work.HiltWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.app_scheduler.R
 import com.example.app_scheduler.SchedulerApplication
+import com.example.app_scheduler.data.db.ScheduleRepository
+import com.example.app_scheduler.data.db.entity.Schedule
+import com.example.app_scheduler.data.model.Success
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class ScheduleWorker (private val appContext: Context, params: WorkerParameters) : Worker(appContext, params) {
+@HiltWorker
+class ScheduleWorker @AssistedInject constructor(@Assisted private val appContext: Context,
+                                                 @Assisted params: WorkerParameters) : Worker(appContext, params) {
     override fun doWork(): Result {
         Log.i("ScheduleWorker","doWork")
-        val appName = inputData.getString("appName")?:""
-        val id = inputData.getString("appId")?:""
-        val packageName = inputData.getString("PackageName")?:""
-//        try {
-//            CoroutineScope(Dispatchers.IO).launch{
-//                dao.updateSchedule(Schedule(id,appName,packageName,Success(),0))
-//            }
-//        } catch (e: Exception) {
-//        }
-        if(SchedulerApplication.isAppForeground){
-            lunchApp()
-        }else{
-            createNotification(packageName,appName)
+        try {
+            val id = inputData.getString(Utility.KEY_ID)
+            CoroutineScope(Dispatchers.IO).launch{
+               findScheduleById(id?:"")
+            }
+        } catch (e: Exception) {
         }
         return Result.success()
     }
 
+    private suspend fun findScheduleById(id:String){
+        if(!id.isNullOrEmpty()){
+            val repo = SchedulerApplication.application.repository
+            val schedule = repo.getScheduleById(id)
+            schedule?.let {
+                updateSchedule(it, repo)
+                if(SchedulerApplication.isAppForeground){
+                    launchApp(it)
+                }else{
+                    createNotification(it.packageName,it.appName)
+                }
+            }
+        }
+    }
+
+    private suspend fun updateSchedule(schedule: Schedule, repository: ScheduleRepository){
+        schedule.status = Success()
+        repository.updateSchedule(schedule)
+    }
+
     private fun createNotification(packageName: String, appName: String) {
         try {
-
-
             val intent = appContext.packageManager.getLaunchIntentForPackage(packageName?:"")
             val pendingIntent =
                 PendingIntent.getActivity(appContext,
@@ -57,6 +78,7 @@ class ScheduleWorker (private val appContext: Context, params: WorkerParameters)
                 setContentText("Click to open")
                 priority = NotificationCompat.PRIORITY_DEFAULT
             }
+            createNotificationChannel(appName)
             with(NotificationManagerCompat.from(appContext)) {
                 if (ActivityCompat.checkSelfPermission(
                         appContext,
@@ -83,25 +105,22 @@ class ScheduleWorker (private val appContext: Context, params: WorkerParameters)
     private fun createNotificationChannel(name: String) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel("CHANNEL_ID", name, importance).apply {
-                description = "Click to open"
-            }
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel("CHANNEL_ID", name, importance).apply {
+            description = "Click to open"
         }
+        // Register the channel with the system
+        val notificationManager: NotificationManager =
+            appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
-    fun lunchApp(){
+    private fun launchApp(schedule: Schedule){
         val handler = Handler(Looper.getMainLooper())
-        val packageName = inputData.getString("PackageName")
         handler.postDelayed({
             Toast.makeText(appContext, "Open app", Toast.LENGTH_SHORT).show()
             try {
-                val intent = appContext.packageManager.getLaunchIntentForPackage(packageName?:"")
+                val intent = appContext.packageManager.getLaunchIntentForPackage(schedule.packageName)
                 appContext.startActivity(intent)
             } catch (e: NameNotFoundException) {
                 Log.i("ScheduleWorker","${e.message}")

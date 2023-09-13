@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkManager
 import com.example.app_scheduler.data.db.ScheduleRepository
 import com.example.app_scheduler.data.db.entity.Schedule
 import com.example.app_scheduler.ui.utility.Utility
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class ScheduleAppsViewModel @Inject constructor(
     val repository: ScheduleRepository,
     val handle: SavedStateHandle,
-    @ApplicationContext context: Context
+    @ApplicationContext context: Context,
 ) : ViewModel() {
 
     private var _isEmpty = MutableStateFlow(false)

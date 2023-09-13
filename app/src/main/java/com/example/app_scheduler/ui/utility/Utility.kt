@@ -30,22 +30,21 @@ object Utility {
     const val TAG_DATE_PICKER = "tagDatePicker"
     const val TAG_TIME_PICKER = "tagTimePicker"
 
+    const val KEY_ID = "key-id"
+
 
     @SuppressLint("RestrictedApi")
     fun scheduleWorker(context: Context, time: Long, schedule: Schedule) {
         val timeInMillis = time - System.currentTimeMillis()
+        val data = Data.Builder().put(KEY_ID, schedule.id).build()
+        val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.NOT_REQUIRED).build()
         val request: OneTimeWorkRequest =
             OneTimeWorkRequestBuilder<ScheduleWorker>()
                 .setInitialDelay(timeInMillis, TimeUnit.MILLISECONDS)
-                .setConstraints(
-                    Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
-                        .build()
-                ).setInputData(Data.Builder().put("PackageName", schedule.packageName).build())
+                .setConstraints(constraints)
+                .setInputData(data)
                 .build()
-        WorkManager
-            .getInstance(context)
-            .enqueueUniqueWork(schedule.id, ExistingWorkPolicy.REPLACE, request)
+       WorkManager.getInstance(context).enqueueUniqueWork(schedule.id, ExistingWorkPolicy.REPLACE, request)
     }
 
     fun cancelWorkById(context: Context, tag: String) {

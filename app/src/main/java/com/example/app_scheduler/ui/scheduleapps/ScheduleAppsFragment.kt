@@ -11,12 +11,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkManager
 import com.example.app_scheduler.R
 import com.example.app_scheduler.data.db.entity.Schedule
+import com.example.app_scheduler.data.model.Scheduled
 import com.example.app_scheduler.databinding.FragmentScheduleappsBinding
 import com.example.app_scheduler.ui.addedit.AddEditFragmentDirections
+import com.example.app_scheduler.ui.utility.Utility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @AndroidEntryPoint
 class ScheduleAppsFragment : Fragment() {
