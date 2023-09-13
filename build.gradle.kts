@@ -5,3 +5,10 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.0-1.0.11" apply false
     id("com.google.dagger.hilt.android") version "2.47" apply false
 }
+
+buildscript{
+    dependencies {
+        val nav_version = "2.7.2"
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
+    }
+}

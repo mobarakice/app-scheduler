@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app_scheduler.data.db.entity.Schedule
 import com.example.app_scheduler.databinding.ScheduleAppItemBinding
+import com.example.app_scheduler.ui.utility.Utility.convertTimestampsToString
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -43,23 +44,10 @@ class ScheduleAppsAdapter(
                 itemBinding.description.visibility = View.VISIBLE
             }
             itemBinding.appName.text = schedule.appName
-            val dateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US)
-            var dateTime = ""
             schedule.time?.let {
-                val date = Date(it)
-                dateTime = dateFormatter.format(date)
-
+                itemBinding.scheduleTime.text = it.convertTimestampsToString()
             }
 
-// Get time from date
-
-// Get time from date
-            //val timeFormatter = SimpleDateFormat("h:mm a")
-            itemBinding.scheduleTime.text = dateTime /*LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(schedule.time ?: 0),
-                ZoneId.systemDefault()
-            )
-                .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")).toString()*/
             itemBinding.edit.setOnClickListener {
                 listener.onUpdateClick(schedule)
             }

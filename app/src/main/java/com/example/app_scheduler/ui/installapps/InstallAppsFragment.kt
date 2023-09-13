@@ -1,10 +1,17 @@
 package com.example.app_scheduler.ui.installapps
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -13,6 +20,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.app_scheduler.R
 import com.example.app_scheduler.data.model.AppInfo
 import com.example.app_scheduler.databinding.FragmentInstallappsBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,22 +73,6 @@ class InstallAppsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        requireActivity().addMenuProvider(object: MenuProvider{
-//            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-//                menuInflater.inflate(R.menu.search_app, menu)
-//
-//                val searchItem: MenuItem? = menu?.findItem(R.id.action_search)
-//                val searchManager = context?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-//                val searchView: SearchView? = searchItem?.actionView as SearchView
-//
-//                //searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-//            }
-//
-//            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-//                TODO("Not yet implemented")
-//            }
-//
-//        })
     }
 
     private fun setupListAdapter(items: List<AppInfo>) {

@@ -1,8 +1,6 @@
 package com.example.app_scheduler.ui.scheduleapps
 
 import android.content.Context
-import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,31 +38,15 @@ class ScheduleAppsViewModel @Inject constructor(
                 items.onEach {
                     it.icon = pm.getAppIcon(it.packageName)
                 }
-            }.collect{
+            }.collect {
                 _apps.value = it
                 _isEmpty.value = it.isEmpty()
             }
         }
     }
 
-//    fun getAppIcon(pm: PackageManager, packageName: String): Drawable? {
-//        try {
-//            return pm.getApplicationIcon(packageName)
-//        } catch (e: PackageManager.NameNotFoundException) {
-//            e.printStackTrace()
-//        }
-//        return null;
-//    }
-
-    fun update(context: Context, schedule: Schedule) {
-        viewModelScope.launch(Dispatchers.IO){
-            repository.updateSchedule(schedule)
-            Utility.scheduleWorker(context,schedule.time?:0, schedule)
-        }
-    }
-
-    fun cancel(context: Context,schedule: Schedule) {
-        viewModelScope.launch(Dispatchers.IO){
+    fun cancel(context: Context, schedule: Schedule) {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.cancelSchedule(schedule)
             Utility.cancelWorkById(context, schedule.id)
         }

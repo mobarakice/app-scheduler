@@ -15,6 +15,7 @@ import com.example.app_scheduler.data.db.entity.Schedule
 import com.example.app_scheduler.data.model.AppInfo
 import com.example.app_scheduler.data.model.Scheduled
 import com.example.app_scheduler.ui.utility.Utility
+import com.example.app_scheduler.ui.utility.Utility.convertStringToTimestamps
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -38,12 +39,16 @@ class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
     val appInfos: StateFlow<List<AppInfo>> = _appInfos
     private var _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
+    private var _isFindingSchedule = MutableStateFlow(false)
+    val isFindingSchedule: StateFlow<Boolean> = _isFindingSchedule
     private var _success = MutableStateFlow(false)
     val success: StateFlow<Boolean> = _success
     var _appInfo: MutableStateFlow<AppInfo?> = MutableStateFlow(null)
     val appInfo: StateFlow<AppInfo?> = _appInfo
     var time: String = ""
     var date: String = ""
+    var timestamp: Long = System.currentTimeMillis()
+    private var uuid = ""
 
 
     init {
@@ -91,14 +96,16 @@ class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
         _appInfo.value = null
         time = ""
         date = ""
+        _isLoading.value = false
+        _isFindingSchedule.value = false
+        _success.value = false
     }
 
     private suspend fun saveSchedule(description: String, item: AppInfo?) {
         item?.let {
-            val uuid = UUID.randomUUID().toString()
-            val dateTime = Utility.getTimeInMillis("$date $time")
+            val dateTime = "$date $time".convertStringToTimestamps()
             val schedule = Schedule(
-                id = uuid,
+                id = uuid.ifEmpty { UUID.randomUUID().toString() },
                 appName = it.name,
                 packageName = it.packageName,
                 status = Scheduled(),
@@ -106,8 +113,28 @@ class InstallAppsViewModel @SuppressLint("StaticFieldLeak")
                 time = dateTime
             )
             repository.insertSchedule(schedule)
-            Utility.scheduleWorker(context, dateTime, schedule)
+            dateTime?.let {timestamps->
+                Utility.scheduleWorker(context, timestamps, schedule)
+            }
             clearAll()
+        }
+    }
+
+    fun findScheduleById(scheduleId: String) {
+        uuid = scheduleId
+        if(scheduleId.isNotEmpty()) {
+            _isFindingSchedule.value = true
+            viewModelScope.launch {
+                findSchedule(scheduleId)
+                _isFindingSchedule.value = false
+            }
+        }
+    }
+
+    suspend fun findSchedule(scheduleId: String){
+        val schedule = repository.getScheduleById(scheduleId)
+        schedule?.let {
+            _appInfo.value = it.getAppInfo()
         }
     }
 }

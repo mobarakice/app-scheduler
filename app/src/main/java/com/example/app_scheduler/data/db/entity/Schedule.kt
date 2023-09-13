@@ -5,10 +5,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.example.app_scheduler.data.model.AppInfo
 import com.example.app_scheduler.data.model.Failed
 import com.example.app_scheduler.data.model.ScheduleState
 import com.example.app_scheduler.data.model.Scheduled
 import com.example.app_scheduler.data.model.Success
+import kotlinx.serialization.Serializable
 import java.util.Date
 
 @Entity(
@@ -31,5 +33,9 @@ data class Schedule(
         is Success -> "Executed"
         is Failed -> "Failed"
     }
+
+    fun getAppInfo():AppInfo = AppInfo(
+        appName, packageName, description = description, time = time
+    )
 }
 

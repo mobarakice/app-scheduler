@@ -1,6 +1,5 @@
 package com.example.app_scheduler.ui.scheduleapps
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,12 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.example.app_scheduler.R
 import com.example.app_scheduler.data.db.entity.Schedule
 import com.example.app_scheduler.databinding.FragmentScheduleappsBinding
-import com.example.app_scheduler.ui.utility.DatePickerFragment
-import com.example.app_scheduler.ui.utility.Utility
+import com.example.app_scheduler.ui.addedit.AddEditFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -52,7 +49,8 @@ class ScheduleAppsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.fab.setOnClickListener{
-            findNavController().navigate(R.id.action_scheduled_apps_to_add_edit_schedule)
+            val  action = ScheduleAppsFragmentDirections.actionScheduledAppsToAddEditSchedule("")
+            findNavController().navigate(action)
         }
     }
 
@@ -60,7 +58,8 @@ class ScheduleAppsFragment : Fragment() {
         val adapter = ScheduleAppsAdapter(schedules, object : ScheduleItemClickListener {
             override fun onUpdateClick(schedule: Schedule) {
                 Log.i("Test","onUpdateClick")
-                pickDateTime(schedule)
+                val  action = ScheduleAppsFragmentDirections.actionScheduledAppsToAddEditSchedule(schedule.id)
+                findNavController().navigate(action)
             }
 
             override fun onCancelClick(schedule: Schedule) {
@@ -76,20 +75,6 @@ class ScheduleAppsFragment : Fragment() {
         binding.list.addItemDecoration(divider)
         binding.list.adapter = adapter
     }
-
-    private fun pickDateTime(schedule: Schedule){
-        activity?.let { aContext->
-            val arg = Bundle()
-            arg.putLong(Utility.DATE_PICKER_KEY, schedule.time ?: System.currentTimeMillis())
-            val fragment = DatePickerFragment {
-                schedule.time = Utility.getTimeInMillis(it)
-                viewModel.update(aContext, schedule)
-            }
-            fragment.arguments = arg
-            fragment.show(aContext.supportFragmentManager, Utility.DATE_PICKER_KEY)
-        }
-    }
-
     private fun emptyView(isEmpty: Boolean){
         if(isEmpty){
             binding.textNoSchedule.visibility = View.VISIBLE

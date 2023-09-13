@@ -12,7 +12,12 @@
         tools:layout="@layout/fragment_scheduleapps" >
         <action
             android:id="@+id/action_scheduled_apps_to_add_edit_schedule"
-            app:destination="@id/add_edit_schedule" />
+            app:destination="@id/add_edit_schedule" >
+            <argument
+                android:name="scheduleId"
+                app:argType="string"
+                android:defaultValue="" />
+        </action>
     </fragment>
 
     <fragment
@@ -26,6 +31,10 @@
         <action
             android:id="@+id/action_add_edit_schedule_to_nav_install_apps"
             app:destination="@id/nav_install_apps" />
+        <argument
+            android:name="scheduleId"
+            app:argType="string"
+            android:defaultValue="" />
     </fragment>
 
     <fragment

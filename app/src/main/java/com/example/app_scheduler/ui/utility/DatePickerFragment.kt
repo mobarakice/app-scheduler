@@ -12,7 +12,7 @@ class DatePickerFragment(private val listener: DateTimePickerListener) : DialogF
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use the current date as the default date in the picker
-        var timeInMillis = arguments?.getLong("DatePicker",0)
+        var timeInMillis = arguments?.getLong(Utility.TAG_DATE_PICKER,System.currentTimeMillis())
         val c = Calendar.getInstance()
         timeInMillis?.let {
             c.time = Date(it)
@@ -28,10 +28,8 @@ class DatePickerFragment(private val listener: DateTimePickerListener) : DialogF
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
         // Do something with the date chosen by the user
-        val m = month+1
-        val date = "$day-$m-$year"
-        val arg = Bundle()
-        arg.putString("DatePicker",date)
+        val monthOfYear = month+1
+        val date = "$day-$monthOfYear-$year"
         listener.onPick(date)
     }
 }
