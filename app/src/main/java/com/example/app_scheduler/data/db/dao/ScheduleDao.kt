@@ -10,7 +10,7 @@ interface ScheduleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSchedule(schedule: Schedule)
 
-    @Query("SELECT * FROM Schedule WHERE status == 0 ORDER BY time DESC")
+    @Query("SELECT * FROM Schedule ORDER BY time DESC")
     fun observeSchedule(): Flow<List<Schedule>>
 
 

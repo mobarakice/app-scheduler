@@ -143,6 +143,7 @@
         android:layout_marginTop="8dp"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
+        android:text="@string/set_scheduling_date"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         android:textColor="@color/purple_200"
         app:layout_constraintBottom_toBottomOf="@+id/date_icon"

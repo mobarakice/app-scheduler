@@ -20,4 +20,5 @@
     <string name="filter_schedule">Filter Schedule</string>
     <string name="search">Search apps</string>
     <string name="add_edit_schedule">Add or Update schedule</string>
+    <string name="set_scheduling_date">Set scheduling date</string>
 </resources>

@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.app_scheduler.R
 import com.example.app_scheduler.data.db.entity.Schedule
+import com.example.app_scheduler.data.model.Failed
+import com.example.app_scheduler.data.model.Scheduled
+import com.example.app_scheduler.data.model.Success
 import com.example.app_scheduler.databinding.ScheduleAppItemBinding
 import com.example.app_scheduler.ui.utility.Utility.convertTimestampsToString
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.example.app_scheduler.ui.utility.Utility.setColor
 
 
 class ScheduleAppsAdapter(
@@ -46,6 +48,27 @@ class ScheduleAppsAdapter(
             itemBinding.appName.text = schedule.appName
             schedule.time?.let {
                 itemBinding.scheduleTime.text = it.convertTimestampsToString()
+            }
+
+            when(schedule.status){
+                is Scheduled -> {
+                    itemBinding.status.text = schedule.getStates()
+                    itemBinding.status.setColor(R.color.blue)
+                }
+                is Success -> {
+                    itemBinding.status.text = schedule.getStates()
+                    itemBinding.status.setColor(R.color.green)
+                    itemBinding.edit.visibility = View.GONE
+                    itemBinding.cancel.visibility = View.GONE
+
+                }
+                is Failed -> {
+                    itemBinding.status.text = schedule.getStates()
+                    itemBinding.status.setColor(R.color.red)
+                    itemBinding.edit.visibility = View.GONE
+                    itemBinding.cancel.visibility = View.GONE
+
+                }
             }
 
             itemBinding.edit.setOnClickListener {

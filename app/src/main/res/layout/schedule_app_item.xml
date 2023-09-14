@@ -57,16 +57,30 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/schedule_24px"
-        android:drawableTint="@color/teal_200"
         android:drawablePadding="5dp"
+        android:drawableTint="@color/grey"
         android:gravity="center_vertical"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-        android:textColor="@color/teal_200"
+        app:layout_constraintBottom_toBottomOf="@id/status"
+        app:layout_constraintEnd_toEndOf="@+id/app_name"
+        app:layout_constraintStart_toStartOf="@id/app_name"
+        app:layout_constraintTop_toBottomOf="@id/description"
+        tools:text="Sep 12, 2023 10:30 pm" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_status"
+        android:drawablePadding="5dp"
+        android:drawableTint="@color/grey"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        android:textColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/app_name"
         app:layout_constraintStart_toStartOf="@+id/app_name"
-        app:layout_constraintTop_toBottomOf="@id/description"
-        tools:text="Sep 12, 2023 10:30 pm" />
+        app:layout_constraintTop_toBottomOf="@id/schedule_time"
+        tools:text="Waiting" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/edit"
@@ -77,7 +91,7 @@
         app:layout_constraintEnd_toStartOf="@id/cancel"
         app:layout_constraintStart_toEndOf="@id/app_name"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_edit" />
+        android:src="@drawable/ic_edit" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/cancel"

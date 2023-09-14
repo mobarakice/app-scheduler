@@ -3,8 +3,15 @@ package com.example.app_scheduler.ui.utility
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.util.Log
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat.getColor
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -144,5 +151,10 @@ object Utility {
         }
         return null
     }
+
+    fun TextView.setColor(@ColorRes color: Int) {
+        setTextColor(getColor(context,color))
+    }
+
 
 }

@@ -2,9 +2,9 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:width="24dp" android:height="24dp" >
         <shape android:shape="oval">
-            <solid android:color="@color/teal_200" />
+            <solid android:color="@color/blue" />
         </shape>
     </item>
     <item android:width="16dp" android:height="16dp"
-        android:drawable="@drawable/edit_24px" android:gravity="center"/>
+        android:drawable="@drawable/update_24px" android:gravity="center"/>
 </layer-list>
