@@ -39,12 +39,13 @@ class ScheduleWorker @AssistedInject constructor(@Assisted private val appContex
                findScheduleById(id?:"")
             }
         } catch (e: Exception) {
+            Log.i("ScheduleWorker","doWork>>exception: ${e.message}")
         }
         return Result.success()
     }
 
     private suspend fun findScheduleById(id:String){
-        if(!id.isNullOrEmpty()){
+        if(id.isNotEmpty()){
             val repo = SchedulerApplication.application.repository
             val schedule = repo.getScheduleById(id)
             schedule?.let {
@@ -65,7 +66,7 @@ class ScheduleWorker @AssistedInject constructor(@Assisted private val appContex
 
     private fun createNotification(packageName: String, appName: String) {
         try {
-            val intent = appContext.packageManager.getLaunchIntentForPackage(packageName?:"")
+            val intent = appContext.packageManager.getLaunchIntentForPackage(packageName)
             val pendingIntent =
                 PendingIntent.getActivity(appContext,
                     0, intent,
@@ -76,6 +77,7 @@ class ScheduleWorker @AssistedInject constructor(@Assisted private val appContex
                 setSmallIcon(R.drawable.notifications_24px)
                 setContentTitle(appName)
                 setContentText("Click to open")
+                setAutoCancel(true)
                 priority = NotificationCompat.PRIORITY_DEFAULT
             }
             createNotificationChannel(appName)
@@ -97,6 +99,7 @@ class ScheduleWorker @AssistedInject constructor(@Assisted private val appContex
                 notify(0, builder.build())
             }
         } catch (e: Exception) {
+            Log.i("ScheduleWorker","createNotification>>exception: ${e.message}")
         }
 
 
@@ -106,8 +109,8 @@ class ScheduleWorker @AssistedInject constructor(@Assisted private val appContex
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel("CHANNEL_ID", name, importance).apply {
-            description = "Click to open"
+        val channel = NotificationChannel(Utility.CHANNEL_ID, name, importance).apply {
+            description = appContext.getString(R.string.click_to_open)
         }
         // Register the channel with the system
         val notificationManager: NotificationManager =
@@ -118,7 +121,8 @@ class ScheduleWorker @AssistedInject constructor(@Assisted private val appContex
     private fun launchApp(schedule: Schedule){
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            Toast.makeText(appContext, "Open app", Toast.LENGTH_SHORT).show()
+            Toast.makeText(appContext,
+                appContext.getString(R.string.application_opened), Toast.LENGTH_SHORT).show()
             try {
                 val intent = appContext.packageManager.getLaunchIntentForPackage(schedule.packageName)
                 appContext.startActivity(intent)

@@ -21,4 +21,6 @@
     <string name="search">Search apps</string>
     <string name="add_edit_schedule">Add or Update schedule</string>
     <string name="set_scheduling_date">Set scheduling date</string>
+    <string name="click_to_open">Click to open application</string>
+    <string name="application_opened">Application opened!</string>
 </resources>
