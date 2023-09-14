@@ -10,8 +10,6 @@ import com.example.app_scheduler.data.model.Failed
 import com.example.app_scheduler.data.model.ScheduleState
 import com.example.app_scheduler.data.model.Scheduled
 import com.example.app_scheduler.data.model.Success
-import kotlinx.serialization.Serializable
-import java.util.Date
 
 @Entity(
     tableName = "schedule",

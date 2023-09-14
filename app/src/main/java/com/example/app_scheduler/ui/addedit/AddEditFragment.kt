@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.app_scheduler.R
 import com.example.app_scheduler.databinding.FragmentAddEditBinding
-import com.example.app_scheduler.ui.installapps.InstallAppsViewModel
 import com.example.app_scheduler.ui.utility.DatePickerFragment
 import com.example.app_scheduler.ui.utility.TimePickerFragment
 import com.example.app_scheduler.ui.utility.Utility.TAG_DATE_PICKER
@@ -37,18 +36,13 @@ class AddEditFragment : Fragment() {
 
     private var _binding: FragmentAddEditBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: InstallAppsViewModel by activityViewModels()
+    private val viewModel: AddEditViewModel by activityViewModels()
     private val args: AddEditFragmentArgs by navArgs()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            // Handle the back button event
-            viewModel.clearAll()
-            findNavController().popBackStack()
-
-        }
+        setUpBackPress()
     }
 
     override fun onCreateView(
@@ -62,9 +56,30 @@ class AddEditFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setStateFlowObservers()
+        setClickListeners()
+        setMenuProvider()
+    }
+
+    private val menuProvider = object : MenuProvider {
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        }
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+            if (menuItem.itemId == android.R.id.home) {
+                Log.i(TAG,"onMenuItemSelected>> home button clicked")
+                viewModel.clearAll()
+                findNavController().popBackStack()
+            }
+            return true
+        }
+    }
+
+    private fun setStateFlowObservers(){
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.appInfo.collect {
                 it?.let {
+                    Log.i(TAG,"AppInfo: $it")
                     val pm = context?.packageManager
                     val icon = pm?.getAppIcon(it.packageName)
                     binding.appIcon.setImageDrawable(icon)
@@ -89,7 +104,9 @@ class AddEditFragment : Fragment() {
                 }
             }
         }
+    }
 
+    private fun setClickListeners(){
         binding.viewApp.setOnClickListener {
             findNavController().navigate(R.id.action_add_edit_schedule_to_nav_install_apps)
         }
@@ -100,35 +117,32 @@ class AddEditFragment : Fragment() {
             showDatePicker()
         }
         binding.save.setOnClickListener {
-            viewModel.doSchedule(binding.inputDescription.text.toString())
-            findNavController().popBackStack()
+            context?.let {
+                viewModel.doSchedule(it, binding.inputDescription.text.toString())
+                findNavController().popBackStack()
+            }
         }
         binding.cancel.setOnClickListener {
             viewModel.clearAll()
             findNavController().popBackStack()
         }
-
-        requireActivity().addMenuProvider(menuProvider)
-
     }
 
-    val menuProvider = object : MenuProvider {
-        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        }
+    private fun setMenuProvider(){
+        activity?.addMenuProvider(menuProvider)
+    }
 
-        override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-            if (menuItem.itemId == android.R.id.home) {
-                viewModel.clearAll()
-                findNavController().popBackStack()
-            }
-            return true
+    private fun setUpBackPress(){
+        activity?.onBackPressedDispatcher?.addCallback(this) {
+            viewModel.clearAll()
+            findNavController().popBackStack()
         }
     }
 
     private fun showTimePicker() {
         activity?.let {
             val dialog = TimePickerFragment { time ->
-                Log.i("Test", time)
+                Log.i(TAG, "TimePickerFragment>>time: $time")
                 viewModel.time = time
                 binding.scheduleTime.text = time.convert24hTo12hFormat()
                 showDatePicker()
@@ -147,7 +161,7 @@ class AddEditFragment : Fragment() {
     private fun showDatePicker() {
         activity?.let {
             val dialog = DatePickerFragment { date ->
-                Log.i("Test", date)
+                Log.i(TAG, "DatePickerFragment>>date: $date")
                 viewModel.date = date
                 binding.scheduleDate.text = date.ddMMyyyyTodMMMMyyyy()
             }
@@ -167,6 +181,10 @@ class AddEditFragment : Fragment() {
         super.onDestroyView()
         requireActivity().removeMenuProvider(menuProvider)
         _binding = null
+    }
+
+    companion object {
+        private const val TAG = "AddEditFragment"
     }
 
 }

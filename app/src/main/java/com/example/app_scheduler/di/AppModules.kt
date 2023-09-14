@@ -43,9 +43,4 @@ object DatabaseModule {
 
     @Provides
     fun provideScheduleDao(db: AppDatabase): ScheduleDao = db.scheduleDao()
-
-//    @Provides
-//    fun provideScheduleRepository(db: AppDatabase): ScheduleRepository {
-//        return ScheduleRepositoryImpl(db)
-//    }
 }

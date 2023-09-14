@@ -7,7 +7,7 @@ interface ScheduleRepository {
     suspend fun insertSchedule(app: Schedule)
     suspend fun getScheduleById(id: String): Schedule?
     suspend fun updateSchedule(schedule: Schedule): Int
-    fun observeSchedule(): Flow<List<Schedule>>
+    fun getAllSchedule(): Flow<List<Schedule>>
 
     suspend fun cancelSchedule(schedule: Schedule): Int
 }

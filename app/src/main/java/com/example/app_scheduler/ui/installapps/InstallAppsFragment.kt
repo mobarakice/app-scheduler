@@ -1,17 +1,10 @@
 package com.example.app_scheduler.ui.installapps
 
-import android.app.SearchManager
-import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.widget.SearchView
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -20,9 +13,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.app_scheduler.R
 import com.example.app_scheduler.data.model.AppInfo
 import com.example.app_scheduler.databinding.FragmentInstallappsBinding
+import com.example.app_scheduler.ui.addedit.AddEditViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,11 +23,8 @@ import kotlinx.coroutines.launch
 class InstallAppsFragment : Fragment() {
 
     private var _binding: FragmentInstallappsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
-    private val viewModel: InstallAppsViewModel by activityViewModels()
+    private val viewModel: AddEditViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -44,7 +34,12 @@ class InstallAppsFragment : Fragment() {
     ): View {
 
         _binding = FragmentInstallappsBinding.inflate(inflater, container, false)
-        // context?.let { viewModel.getAllInstallApps(it) }
+        setUpStateFlowObservers()
+        return binding.root
+    }
+
+    private fun setUpStateFlowObservers(){
+        Log.i(TAG,"setUpStateFlowObservers()>>start")
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.appInfos.collect {
@@ -52,15 +47,9 @@ class InstallAppsFragment : Fragment() {
                 }
             }
         }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.success.collect {
-                Toast.makeText(context?.applicationContext, "Success!", Toast.LENGTH_LONG)
-            }
-        }
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isLoading.collect {
+                Log.i(TAG,"isLoading: $it")
                 if (it) {
                     binding.progressBar.visibility = View.VISIBLE
                 } else {
@@ -68,15 +57,13 @@ class InstallAppsFragment : Fragment() {
                 }
             }
         }
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        Log.i(TAG,"setUpStateFlowObservers()>>end")
     }
 
     private fun setupListAdapter(items: List<AppInfo>) {
+        Log.i(TAG,"setupListAdapter()>>start")
         val adapter = InstallAppsAdapter(items) { item->
+            Log.i(TAG,"setupListAdapter()>>item clicked>> $item")
             viewModel._appInfo.value = item
             findNavController().popBackStack()
         }
@@ -85,6 +72,7 @@ class InstallAppsFragment : Fragment() {
         val divider = DividerItemDecoration(context, layoutManager.orientation)
         binding.list.addItemDecoration(divider)
         binding.list.adapter = adapter
+        Log.i(TAG,"setupListAdapter()>>end")
     }
 
     override fun onDestroyView() {
@@ -92,4 +80,7 @@ class InstallAppsFragment : Fragment() {
         _binding = null
     }
 
+    companion object {
+        const val TAG = "InstallAppsFragment"
+    }
 }

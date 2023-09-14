@@ -11,16 +11,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.work.WorkManager
-import com.example.app_scheduler.R
 import com.example.app_scheduler.data.db.entity.Schedule
-import com.example.app_scheduler.data.model.Scheduled
 import com.example.app_scheduler.databinding.FragmentScheduleappsBinding
-import com.example.app_scheduler.ui.addedit.AddEditFragmentDirections
-import com.example.app_scheduler.ui.utility.Utility
+import com.example.app_scheduler.ui.installapps.InstallAppsFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 @AndroidEntryPoint
 class ScheduleAppsFragment : Fragment() {
@@ -36,6 +31,12 @@ class ScheduleAppsFragment : Fragment() {
     ): View {
 
         _binding = FragmentScheduleappsBinding.inflate(inflater, container, false)
+        setUpStateFlowObservers()
+        setUpClickListeners()
+        return binding.root
+    }
+    private fun setUpStateFlowObservers(){
+        Log.i(TAG,"setUpStateFlowObservers()>>start")
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.apps.collect{
                 setupListAdapter(it)
@@ -47,27 +48,30 @@ class ScheduleAppsFragment : Fragment() {
                 emptyView(it)
             }
         }
-        return binding.root
+        Log.i(TAG,"setUpStateFlowObservers()>>end")
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun setUpClickListeners(){
+        Log.i(TAG,"setUpClickListeners()>>start")
         binding.fab.setOnClickListener{
+            Log.i(TAG,"setUpClickListeners()>>new schedule")
             val  action = ScheduleAppsFragmentDirections.actionScheduledAppsToAddEditSchedule("")
             findNavController().navigate(action)
         }
+        Log.i(TAG,"setUpClickListeners()>>end")
     }
 
     private fun setupListAdapter(schedules: List<Schedule>) {
+        Log.i(TAG,"setupListAdapter()>>start")
         val adapter = ScheduleAppsAdapter(schedules, object : ScheduleItemClickListener {
             override fun onUpdateClick(schedule: Schedule) {
-                Log.i("Test","onUpdateClick")
+                Log.i(TAG,"onUpdateClick>>schedule: $schedule")
                 val  action = ScheduleAppsFragmentDirections.actionScheduledAppsToAddEditSchedule(schedule.id)
                 findNavController().navigate(action)
             }
 
             override fun onCancelClick(schedule: Schedule) {
-                Log.i("Test","onCancelClick")
+                Log.i(TAG,"onCancelClick>>schedule: $schedule")
                 context?.let { viewModel.cancel(it, schedule) }
 
             }
@@ -78,8 +82,10 @@ class ScheduleAppsFragment : Fragment() {
         val divider = DividerItemDecoration(context,layoutManager.orientation)
         binding.list.addItemDecoration(divider)
         binding.list.adapter = adapter
+        Log.i(TAG,"setupListAdapter()>>end")
     }
     private fun emptyView(isEmpty: Boolean){
+        Log.i(TAG,"emptyView()>>isEmpty: $isEmpty")
         if(isEmpty){
             binding.textNoSchedule.visibility = View.VISIBLE
             binding.list.visibility = View.GONE
@@ -92,5 +98,9 @@ class ScheduleAppsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val TAG = "ScheduleAppsFragment"
     }
 }

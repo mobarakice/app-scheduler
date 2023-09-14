@@ -15,7 +15,7 @@ class ScheduleRepositoryImpl @Inject constructor (private val db: AppDatabase) :
     override suspend fun updateSchedule(schedule: Schedule): Int =
         db.scheduleDao().updateSchedule(schedule)
 
-    override fun observeSchedule(): Flow<List<Schedule>> = db.scheduleDao().observeSchedule()
+    override fun getAllSchedule(): Flow<List<Schedule>> = db.scheduleDao().observeSchedule()
     override suspend fun cancelSchedule(schedule: Schedule): Int {
         return db.scheduleDao().cancelSchedule(schedule)
     }

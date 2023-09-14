@@ -1,10 +1,10 @@
 package com.example.app_scheduler.ui.scheduleapps
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkManager
 import com.example.app_scheduler.data.db.ScheduleRepository
 import com.example.app_scheduler.data.db.entity.Schedule
 import com.example.app_scheduler.ui.utility.Utility
@@ -21,10 +21,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScheduleAppsViewModel @Inject constructor(
-    val repository: ScheduleRepository,
-    val handle: SavedStateHandle,
+    private val repository: ScheduleRepository,
     @ApplicationContext context: Context,
 ) : ViewModel() {
+
+    private val TAG = "ScheduleAppsViewModel"
 
     private var _isEmpty = MutableStateFlow(false)
     val isEmpty: StateFlow<Boolean> = _isEmpty
@@ -33,9 +34,14 @@ class ScheduleAppsViewModel @Inject constructor(
     val apps: StateFlow<List<Schedule>> = _apps
 
     init {
+        observeAllSchedules(context)
+    }
+
+    private fun observeAllSchedules(context: Context){
+        Log.i(TAG,"observeAllSchedules() start")
         viewModelScope.launch(Dispatchers.IO) {
             val pm = context.packageManager
-            repository.observeSchedule().map { items ->
+            repository.getAllSchedule().map { items ->
                 items.onEach {
                     it.icon = pm.getAppIcon(it.packageName)
                 }
@@ -44,9 +50,11 @@ class ScheduleAppsViewModel @Inject constructor(
                 _isEmpty.value = it.isEmpty()
             }
         }
+        Log.i(TAG,"observeAllSchedules() end")
     }
 
     fun cancel(context: Context, schedule: Schedule) {
+        Log.i(TAG,"cancel() schedule: $schedule")
         viewModelScope.launch(Dispatchers.IO) {
             repository.cancelSchedule(schedule)
             Utility.cancelWorkById(context, schedule.id)
